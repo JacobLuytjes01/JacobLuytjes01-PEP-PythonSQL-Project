@@ -97,7 +97,6 @@ def write_ordered_calls(csv_file_path):
     insertVals = ["callId,phoneNumber,startTime,endTime,direction,userId"]
     cursor.execute('''SELECT callId, phoneNumber, startTime, endTime, direction, userId
                       FROM callLogs
-                      GROUP BY userId
                       ORDER BY userId, startTime''')
     for x in cursor.fetchall():
         insertVals.append(f"{x[0]},{x[1]},{x[2]},{x[3]},{x[4]},{x[5]}")
