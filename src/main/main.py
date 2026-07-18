@@ -54,7 +54,7 @@ def load_and_clean_users(file_path):
         reader = csv.reader(file)
         next(reader)
         for data in reader:
-            if len(data) == 2 and data[0] != "" and data[1] != "":
+            if len(data) == 2 and data[0].lstrip() != "" and data[1].lstrip() != "":
                 InsertedVals.append(f"('{data[0]}', '{data[1]}')")
 
     InsertCommand += ", ".join(InsertedVals) + ";"
