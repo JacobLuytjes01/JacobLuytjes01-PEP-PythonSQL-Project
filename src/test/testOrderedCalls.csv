@@ -1,2 +1,4 @@
-callId,phoneNumber,startTime,endTime,direction,userId
-
+userId,avgDuration,numCalls
+1,105.0,4
+2,42.5,4
+4,55.0,2
