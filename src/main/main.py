@@ -94,13 +94,13 @@ def write_user_analytics(csv_file_path):
 # This function will write the callLogs ordered by userId, then start time.
 # Then, write the ordered callLogs to orderedCalls.csv
 def write_ordered_calls(csv_file_path):
-    insertVals = ["userId,avgDuration,numCalls"]
-    cursor.execute('''SELECT userId, AVG(endTime - startTime) AS avgDuration, COUNT(*) AS numCalls
+    insertVals = ["callId,phoneNumber,startTime,endTime,direction,userId"]
+    cursor.execute('''SELECT callId, phoneNumber, startTime, endTime, direction, userId
                       FROM callLogs
                       GROUP BY userId
                       ORDER BY userId, startTime''')
     for x in cursor.fetchall():
-        insertVals.append(f"{x[0]},{x[1]},{x[2]}")
+        insertVals.append(f"{x[0]},{x[1]},{x[2]},{x[3]},{x[4]},{x[5]}")
 
     with open(csv_file_path, mode='w') as file:
         file.write("\n".join(insertVals))
