@@ -36,7 +36,7 @@ def main():
     write_ordered_calls('resources/orderedCalls.csv')
 
     # Helper method that prints the contents of the users and callLogs tables. Uncomment to see data.
-    select_from_users_and_call_logs()
+    # select_from_users_and_call_logs()
 
     # Close the cursor and connection. main function ends here.
     cursor.close()
@@ -48,61 +48,61 @@ def main():
 
 # This function will load the users.csv file into the users table, discarding any records with incomplete data
 def load_and_clean_users(file_path):
-    InsertCommand = '''INSERT INTO users (firstName, lastName) VALUES '''
-    InsertedVals = []
+    insert_command = '''INSERT INTO users (firstName, lastName) VALUES '''
+    inserted_vals = []
     with open(file_path, mode='r') as file:
         reader = csv.reader(file)
         next(reader)
         for data in reader:
             if len(data) == 2 and data[0].lstrip() != "" and data[1].lstrip() != "":
-                InsertedVals.append(f"('{data[0]}', '{data[1]}')")
+                inserted_vals.append(f"('{data[0]}', '{data[1]}')")
 
-    InsertCommand += ", ".join(InsertedVals) + ";"
-    cursor.execute(InsertCommand)
+    insert_command += ", ".join(inserted_vals) + ";"
+    cursor.execute(insert_command)
 
 
 # This function will load the callLogs.csv file into the callLogs table, discarding any records with incomplete data
 def load_and_clean_call_logs(file_path):
-    InsertCommand = '''INSERT INTO callLogs (phoneNumber, startTime, endTime, direction, userId) VALUES '''
-    InsertedVals = []
+    insert_command = '''INSERT INTO callLogs (phoneNumber, startTime, endTime, direction, userId) VALUES '''
+    inserted_vals = []
     with open(file_path, mode='r') as file:
         reader = csv.reader(file)
         next(reader)
         for data in reader:
-            if len(data) == 5 and data[0] != "" and data[1] != "" and data[2] != "" and data[3] != "" and data[4] != "":
-                InsertedVals.append(f"('{data[0]}', {data[1]}, {data[2]}, '{data[3]}', {data[4]})")
+            if len(data) == 5 and data[0].lstrip() != "" and data[1] != "" and data[2] != "" and data[3] != "" and data[4] != "":
+                inserted_vals.append(f"('{data[0]}', {data[1]}, {data[2]}, '{data[3]}', {data[4]})")
             
-    InsertCommand += ", ".join(InsertedVals) + ";"
-    cursor.execute(InsertCommand)
+    insert_command += ", ".join(inserted_vals) + ";"
+    cursor.execute(insert_command)
 
 
 # This function will write analytics data to testUserAnalytics.csv - average call time, and number of calls per user.
 # You must save records consisting of each userId, avgDuration, and numCalls
 # example: 1,105.0,4 - where 1 is the userId, 105.0 is the avgDuration, and 4 is the numCalls.
 def write_user_analytics(csv_file_path):
-    insertVals = ["userId,avgDuration,numCalls"]
+    inserted_vals = ["userId,avgDuration,numCalls"]
     cursor.execute('''SELECT userId, AVG(endTime - startTime) AS avgDuration, COUNT(*) AS numCalls
                       FROM callLogs
                       GROUP BY userId''')
     for x in cursor.fetchall():
-        insertVals.append(f"{x[0]},{x[1]},{x[2]}")
+        inserted_vals.append(f"{x[0]},{x[1]},{x[2]}")
 
     with open(csv_file_path, mode='w') as file:
-        file.write("\n".join(insertVals))
+        file.write("\n".join(inserted_vals))
 
 
 # This function will write the callLogs ordered by userId, then start time.
 # Then, write the ordered callLogs to orderedCalls.csv
 def write_ordered_calls(csv_file_path):
-    insertVals = ["callId,phoneNumber,startTime,endTime,direction,userId"]
+    inserted_vals = ["callId,phoneNumber,startTime,endTime,direction,userId"]
     cursor.execute('''SELECT callId, phoneNumber, startTime, endTime, direction, userId
                       FROM callLogs
                       ORDER BY userId, startTime''')
     for x in cursor.fetchall():
-        insertVals.append(f"{x[0]},{x[1]},{x[2]},{x[3]},{x[4]},{x[5]}")
+        inserted_vals.append(f"{x[0]},{x[1]},{x[2]},{x[3]},{x[4]},{x[5]}")
 
     with open(csv_file_path, mode='w') as file:
-        file.write("\n".join(insertVals))
+        file.write("\n".join(inserted_vals))
 
 
 
